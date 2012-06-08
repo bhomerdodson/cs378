@@ -19,7 +19,7 @@ participate in extracurricular activities
 /* -----------------------------------------------------------------------
 2. List any piece of advice.
    [Advice for Computer Science College Students]
-   (2 pts)
+   (3 pts)
 
 write
 learn C
