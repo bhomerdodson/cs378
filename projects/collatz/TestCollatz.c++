@@ -1,6 +1,6 @@
 // --------------------------------
 // projects/collatz/TestCollatz.c++
-// Copyright (C) 2011
+// Copyright (C) 2012
 // Glenn P. Downing
 // --------------------------------
 

@@ -1,6 +1,6 @@
 // -------------------------------
 // projects/collatz/RunCollatz.c++
-// Copyright (C) 2011
+// Copyright (C) 2012
 // Glenn P. Downing
 // -------------------------------
 
