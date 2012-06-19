@@ -28,8 +28,7 @@ int h (int n) {
             m = 1;
             break;
         default:
-            m = 0;
-            break;}
+            m = 0;}
     return m;}
 
 int main () {
