@@ -3,8 +3,8 @@
 // --------
 
 /*
-% g++-4.5 -pedantic -std=c++0x -Wall Hello.c++ -o Hello.c++.app
-% Hello.c++.app
+% g++-4.5 -pedantic -std=c++0x -Wall Auto.c++ -o Auto.c++.app
+% Auto.c++.app
 */
 
 #include <cassert>
