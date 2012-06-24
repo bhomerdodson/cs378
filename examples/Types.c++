@@ -14,8 +14,8 @@ struct A {
     T      x;};
 
 union U {
-    int   i;
-    float f;};
+    int  i;
+    long j;};
 
 enum Color {red, green, blue};
 
@@ -25,45 +25,45 @@ int main () {
 
     bool b1 = true;
     bool b2 = false;
-    assert(sizeof(bool) ==  1);
     assert(sizeof(b1)   ==  1);
     assert(sizeof(b2)   ==  1);
+    assert(sizeof(bool) ==  1);
 
     char c = 'a';
-    assert(sizeof(char) ==  1);
     assert(sizeof(c)    ==  1);
+    assert(sizeof(char) ==  1);
     assert(numeric_limits<         char>::min() == -128);
     assert(numeric_limits<         char>::max() ==  127);
     assert(numeric_limits<unsigned char>::min() ==    0);
     assert(numeric_limits<unsigned char>::max() ==  255);
 
     short s = 2;
-    assert(sizeof(short) ==  2);
     assert(sizeof(s)     ==  2);
+    assert(sizeof(short) ==  2);
     assert(numeric_limits<         short>::min() == -32768);
     assert(numeric_limits<         short>::max() ==  32767);
     assert(numeric_limits<unsigned short>::min() ==      0);
     assert(numeric_limits<unsigned short>::max() ==  65535);
 
     int i = 2;
-    assert(sizeof(int) ==  4);
     assert(sizeof(i)   ==  4);
+    assert(sizeof(int) ==  4);
     assert(numeric_limits<         int>::min() == -2147483648);
     assert(numeric_limits<         int>::max() ==  2147483647);
     assert(numeric_limits<unsigned int>::min() ==  0);
     assert(numeric_limits<unsigned int>::max() ==  4294967295U);
 
     long j = 2L;
-    assert(sizeof(long) ==  8);
     assert(sizeof(j)    ==  8);
+    assert(sizeof(long) ==  8);
     assert(numeric_limits<         long>::min() == -9223372036854775807L - 1);
     assert(numeric_limits<         long>::max() ==  9223372036854775807L);
     assert(numeric_limits<unsigned long>::min() ==                    0);
     assert(numeric_limits<unsigned long>::max() == 18446744073709551615UL);
 
     float f = 2.34F;
-    assert(sizeof(float) == 4);
     assert(sizeof(f)     == 4);
+    assert(sizeof(float) == 4);
     {
     ostringstream out;
     out << numeric_limits<float>::min();
@@ -76,8 +76,8 @@ int main () {
     }
 
     double d = 2.34;
-    assert(sizeof(double) == 8);
     assert(sizeof(d)      == 8);
+    assert(sizeof(double) == 8);
     {
     ostringstream out;
     out << numeric_limits<double>::min();
@@ -89,9 +89,9 @@ int main () {
     assert(out.str() == "1.79769e+308");
     }
 
-    long double ld = 2.34LD;
-    assert(sizeof(long double) == 16);
+    long double ld = 2.34L;
     assert(sizeof(ld)          == 16);
+    assert(sizeof(long double) == 16);
     {
     ostringstream out;
     out << numeric_limits<long double>::min();
@@ -122,10 +122,10 @@ int main () {
     assert(sizeof(x3)          == 40);
 
     U u1 = {2};
-    U u2 = {3.45};
-    assert(sizeof(U)  == 4);
-    assert(sizeof(u1) == 4);
-    assert(sizeof(u2) == 4);
+    U u2 = {2.34};
+    assert(sizeof(U)  == 8);
+    assert(sizeof(u1) == 8);
+    assert(sizeof(u2) == 8);
 
     Color c1 = red;
     Color c2 = green;
