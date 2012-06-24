@@ -1,3 +1,12 @@
+// --------
+// Auto.c++
+// --------
+
+/*
+% g++-4.5 -pedantic -std=c++0x -Wall Hello.c++ -o Hello.c++.app
+% Hello.c++.app
+*/
+
 #include <cassert>
 #include <iostream>
 
