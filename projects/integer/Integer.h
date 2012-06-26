@@ -285,6 +285,18 @@ class Integer {
         return lhs << "0";}
 
     // ---
+    // abs
+    // ---
+
+    /**
+     * absolute value
+     * does NOT modify the argument
+     * <your documentation>
+     */
+    friend Integer abs (Integer x) {
+        return x.abs();}
+
+    // ---
     // pow
     // ---
 
@@ -493,18 +505,5 @@ class Integer {
         Integer& pow (int e) {
             // <your code>
             return *this;}};
-
-// ---
-// abs
-// ---
-
-/**
- * absolute value
- * does NOT modify the argument
- * <your documentation>
- */
-template <typename T, typename C>
-Integer<T, C> abs (Integer<T, C> x) {
-    return x.abs();}
 
 #endif // Integer_h
