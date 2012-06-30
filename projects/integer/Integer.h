@@ -259,6 +259,7 @@ class Integer {
 
     /**
      * <your documentation>
+     * @throws invalid_argument if (rhs < 0)
      */
     friend Integer operator << (Integer lhs, int rhs) {
         return lhs <<= rhs;}
@@ -269,6 +270,7 @@ class Integer {
 
     /**
      * <your documentation>
+     * @throws invalid_argument if (rhs < 0)
      */
     friend Integer operator >> (Integer lhs, int rhs) {
         return lhs >>= rhs;}
