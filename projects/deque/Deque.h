@@ -325,7 +325,7 @@ class MyDeque {
                 // typedefs
                 // --------
 
-                typedef std::bidirectional_iterator_tag iterator_category;
+                typedef std::bidirectional_iterator_tag   iterator_category;
                 typedef typename MyDeque::value_type      value_type;
                 typedef typename MyDeque::difference_type difference_type;
                 typedef typename MyDeque::const_pointer   pointer;
