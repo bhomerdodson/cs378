@@ -4,15 +4,16 @@
 
 #include <cassert>
 #include <iostream>
-
+#include <deque>
 
 int main () {
     using namespace std;
     cout << "Test.c++" << endl;
 
-    int i = 2;
-    i >>= 3;
-    cout << i << endl;
+    deque<int> x;
+    cout << x.size() << endl;
+
+    deque<int>::iterator y;
 
     cout << "Done." << endl;
     return 0;}
