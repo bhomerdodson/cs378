@@ -4,11 +4,12 @@
 
 // parametric compile-time polymorphism
 
-#include <cassert>  // assert
-#include <cstring>  // strcmp
-#include <iostream> // cout, endl
-#include <string>   // string
-#include <vector>   // vector
+#include <algorithm> // max
+#include <cassert>   // assert
+#include <cstring>   // strcmp
+#include <iostream>  // cout, endl
+#include <string>    // string
+#include <vector>    // vector
 
 // concept LessThanComparable<T> {
 //     bool operator < (const T&, const T&);}
@@ -75,15 +76,26 @@ int main () {
     cout << "Max.c++" << endl;
 
     assert(my_max(2,   3)   == 3);
-//  assert(my_max(2,   3.4) == 3);                                  // error: cannot convert "double" to "const char*"
-//  assert(my_max(2.3, 4)   == 4);                                  // error: cannot convert "double" to "const char*"
+//  assert(my_max(2,   3.4) == 3);   // error: cannot convert "double" to "const char*"
+//  assert(my_max(2.3, 4)   == 4);   // error: cannot convert "double" to "const char*"
     assert(my_max(2.3, 4.5) == 4.5);
+
+    assert(max(2,   3)   == 3);
+//  assert(max(2,   3.4) == 3);   // error: cannot convert "double" to "const char*"
+//  assert(max(2.3, 4)   == 4);   // error: cannot convert "double" to "const char*"
+    assert(max(2.3, 4.5) == 4.5);
 
     assert(my_max<int>(2,   3.4) == 3);
     assert(my_max<int>(2.3, 4)   == 4);
 
+    assert(max<int>(2,   3.4) == 3);
+    assert(max<int>(2.3, 4)   == 4);
+
     assert(my_max<double>(2,   3.4) == 3.4);
     assert(my_max<double>(2.3, 4)   == 4);
+
+    assert(max<double>(2,   3.4) == 3.4);
+    assert(max<double>(2.3, 4)   == 4);
 
     {
     const int i = 2;
@@ -99,19 +111,29 @@ int main () {
     {
     A x = 2;
     A y = 3;
-    assert(&max(x, y) == &y);
+    assert(&my_max(x, y) == &y);
+    assert(&   max(x, y) == &y);
     }
 
     {
     B x = 2;
     B y = 3;
-    assert(&max(x, y) == &y);
+    assert(&my_max(x, y) == &y);
+    assert(&   max(x, y) == &y);
     }
 
     {
     int i = 2;
     int j = 3;
     my_swap(i, j);
+    assert(i == 3);
+    assert(j == 2);
+    }
+
+    {
+    int i = 2;
+    int j = 3;
+    swap(i, j);
     assert(i == 3);
     assert(j == 2);
     }
@@ -125,9 +147,25 @@ int main () {
     }
 
     {
+    double d = 2;
+    double e = 3;
+    swap(d, e);
+    assert(d == 3);
+    assert(e == 2);
+    }
+
+    {
     vector<int> x(10, 2);
     vector<int> y(20, 3);
     my_swap(x, y);
+    assert(x.size() == 20);
+    assert(y.size() == 10);
+    }
+
+    {
+    vector<int> x(10, 2);
+    vector<int> y(20, 3);
+    swap(x, y);
     assert(x.size() == 20);
     assert(y.size() == 10);
     }
