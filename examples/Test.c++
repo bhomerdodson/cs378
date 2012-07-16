@@ -13,7 +13,11 @@ int main () {
     deque<int> x;
     cout << x.size() << endl;
 
-    deque<int>::iterator y;
+    x.push_back(2);
+    cout << x.size() << endl;
+
+    x.erase(x.end() + 10);
+    cout << x.size() << endl;
 
     cout << "Done." << endl;
     return 0;}
