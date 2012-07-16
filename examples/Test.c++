@@ -1,95 +1,107 @@
-// ----------
-// Tuples.c++
-// ----------
+// -------------
+// Functions.c++
+// -------------
 
-#include <cassert>  // assert
-#include <iostream> // cout, endl
-#include <utility>  // pair
+#include <cassert>    // assert
+#include <functional> // multiplies, plus
+#include <iostream>   // cout, endl
 
-#include "boost/tuple/tuple.hpp" // tie, tuple
+int plus_1 (int x, int y) {
+    return x + y;}
 
-template <typename T0, typename T1>
-struct my_tuple {
-    T0 first;
-    T1 second;
+int multiplies_1 (int x, int y) {
+    return x * y;}
 
-    my_tuple (T0 first, T1 second) :
-            first  (first),
-            second (second)
-        {}
+template <typename T>
+T plus_2 (T x, T y) {
+    return x + y;}
 
-    template <typename U0, typename U1>
-    my_tuple& operator = (std::pair<U0, U1> p) {
-        first   = p.first;
-        second = p.second;
-        return *this;}};
+template <typename T>
+T multiplies_2 (T x, T y) {
+    return x * y;}
 
-template <typename T0, typename T1>
-my_tuple<T0&, T1&> my_tie (T0& first, T1& second) {
-    return my_tuple<T0&, T1&>(first, second);}
+struct plus_3 {
+    int operator () (int x, int y) const {
+        return x + y;}};
+
+struct multiplies_3 {
+    int operator () (int x, int y) const {
+        return x * y;}};
+
+template <typename T>
+struct plus_4 {
+    T operator () (const T& x, const T& y) const {
+        return x + y;}};
+
+template <typename T>
+struct multiplies_4 {
+    T operator () (const T& x, const T& y) const {
+        return x * y;}};
+
+int f (int (*bf) (int, int), int x, int y, int z) {
+    return bf(bf(x, y), z);}
+
+template <typename BF, typename T>
+T g (BF bf, const T& x, const T& y, const T& z) {
+    return bf(bf(x, y), z);}
 
 int main () {
     using namespace std;
-    using namespace boost;
-    cout << "Tuples.c++" << endl;
+    cout << "Functions.c++" << endl;
 
-    typedef    tuple<int&, int&>    tuple_type;
-    typedef my_tuple<int&, int&> my_tuple_type;
+    assert(plus_1      (2, 3) == 5);
+    assert(multiplies_1(2, 3) == 6);
 
-    int v1 = 2;
-    int v2 = 3;
+    assert(plus_2      (2, 3) == 5);
+    assert(multiplies_2(2, 3) == 6);
 
-    {
-    const tuple_type x(v1, v2);
-    assert(&x.get<0>() == &v1);
-    assert(&x.get<1>() == &v2);
-    }
+    assert(plus_3()      (2, 3) == 5);
+    assert(multiplies_3()(2, 3) == 6);
 
-    {
-    const my_tuple_type x(v1, v2);
-    assert(&x.first  == &v1);
-    assert(&x.second == &v2);
-    }
+    assert(plus_4<int>()      (2, 3) == 5);
+    assert(multiplies_4<int>()(2, 3) == 6);
 
-    {
-    const tuple_type x(v1, v2);
-    const tuple_type y = x;
-    assert(&y.get<0>() == &v1);
-    assert(&y.get<1>() == &v2);
-    }
+    assert(plus<int>()      (2, 3) == 5);
+    assert(multiplies<int>()(2, 3) == 6);
 
-    {
-    const my_tuple_type x(v1, v2);
-    const my_tuple_type y = x;
-    assert(&y.first  == &v1);
-    assert(&y.second == &v2);
-    }
+    assert([](int x, int y) {return x + y;}(2, 3) == 5);
+    assert([](int x, int y) {return x * y;}(2, 3) == 6);
 
-    {
-    assert(&tie(v1, v2).get<0>() == &v1);
-    assert(&tie(v1, v2).get<1>() == &v2);
-    }
+    assert(f(plus_1,       2, 3, 4) ==  9);
+    assert(f(multiplies_1, 2, 3, 4) == 24);
 
-    {
-    assert(&my_tie(v1, v2).first  == &v1);
-    assert(&my_tie(v1, v2).second == &v2);
-    }
+    assert(f(plus_2,       2, 3, 4) ==  9);
+    assert(f(multiplies_2, 2, 3, 4) == 24);
 
-    {
-    int i = 2;
-    int j = 3;
-    tie(i, j) = make_pair(4, 5);
-    assert(i == 4);
-    assert(j == 5);
-    }
+//  assert(f(plus_3(),       2, 3, 4) ==  9); // doesn't compile
+//  assert(f(multiplies_3(), 2, 3, 4) == 24); // doesn't compile
 
-    {
-    int i = 2;
-    int j = 3;
-    my_tie(i, j) = make_pair(4, 5);
-    assert(i == 4);
-    assert(j == 5);
-    }
+//  assert(f(plus_4<int>(),       2, 3, 4) ==  9); // doesn't compile
+//  assert(f(multiplies_4<int>(), 2, 3, 4) == 24); // doesn't compile
+
+//  assert(f(plus<int>(),       2, 3, 4) ==  9); // doesn't compile
+//  assert(f(multiplies<int>(), 2, 3, 4) == 24); // doesn't compile
+
+    assert(f([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
+    assert(f([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
+
+    assert(g(plus_1,       2, 3, 4) ==  9);
+    assert(g(multiplies_1, 2, 3, 4) == 24);
+
+    assert(g(plus_2<int>,       2, 3, 4) ==  9);
+    assert(g(multiplies_2<int>, 2, 3, 4) == 24);
+
+    assert(g(plus_3(),       2, 3, 4) ==  9);
+    assert(g(multiplies_3(), 2, 3, 4) == 24);
+
+    assert(g(plus_4<int>(),       2, 3, 4) ==  9);
+    assert(g(multiplies_4<int>(), 2, 3, 4) == 24);
+
+    assert(g(plus<int>(),       2, 3, 4) ==  9);
+    assert(g(multiplies<int>(), 2, 3, 4) == 24);
+
+    assert(g([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
+    assert(g([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
 
     cout << "Done." << endl;
     return 0;}

@@ -64,6 +64,9 @@ int main () {
     assert(plus<int>()      (2, 3) == 5);
     assert(multiplies<int>()(2, 3) == 6);
 
+    assert([](int x, int y) {return x + y;}(2, 3) == 5);
+    assert([](int x, int y) {return x * y;}(2, 3) == 6);
+
     assert(f(plus_1,       2, 3, 4) ==  9);
     assert(f(multiplies_1, 2, 3, 4) == 24);
 
@@ -79,6 +82,9 @@ int main () {
 //  assert(f(plus<int>(),       2, 3, 4) ==  9); // doesn't compile
 //  assert(f(multiplies<int>(), 2, 3, 4) == 24); // doesn't compile
 
+    assert(f([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
+    assert(f([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
+
     assert(g(plus_1,       2, 3, 4) ==  9);
     assert(g(multiplies_1, 2, 3, 4) == 24);
 
@@ -93,6 +99,9 @@ int main () {
 
     assert(g(plus<int>(),       2, 3, 4) ==  9);
     assert(g(multiplies<int>(), 2, 3, 4) == 24);
+
+    assert(g([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
+    assert(g([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
 
     cout << "Done." << endl;
     return 0;}
