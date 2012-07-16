@@ -2,6 +2,11 @@
 // Functions.c++
 // -------------
 
+/*
+% g++-4.5 -pedantic -std=c++0x -Wall Functions.c++ -o Functions.c++.app
+% Functions.c++.app
+*/
+
 #include <cassert>    // assert
 #include <functional> // multiplies, plus
 #include <iostream>   // cout, endl
