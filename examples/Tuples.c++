@@ -20,7 +20,7 @@ struct my_tuple {
 
     template <typename U0, typename U1>
     my_tuple& operator = (std::pair<U0, U1> p) {
-        first   = p.first;
+        first  = p.first;
         second = p.second;
         return *this;}};
 
