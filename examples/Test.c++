@@ -16,10 +16,16 @@ struct my_tuple {
     my_tuple (T0 first, T1 second) :
             first  (first),
             second (second)
-        {}};
+        {}
+
+    template <typename U0, typename U1>
+    my_tuple& operator = (std::pair<U0, U1> p) {
+        first   = p.first;
+        second = p.second;
+        return *this;}};
 
 template <typename T0, typename T1>
-my_tuple<T0&, T1&> my_tie (T0 first, T1 second) {
+my_tuple<T0&, T1&> my_tie (T0& first, T1& second) {
     return my_tuple<T0&, T1&>(first, second);}
 
 int main () {
@@ -73,6 +79,14 @@ int main () {
     int i = 2;
     int j = 3;
     tie(i, j) = make_pair(4, 5);
+    assert(i == 4);
+    assert(j == 5);
+    }
+
+    {
+    int i = 2;
+    int j = 3;
+    my_tie(i, j) = make_pair(4, 5);
     assert(i == 4);
     assert(j == 5);
     }

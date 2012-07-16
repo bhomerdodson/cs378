@@ -8,15 +8,33 @@
 
 #include "boost/tuple/tuple.hpp" // tie, tuple
 
-std::pair<int, int> f () {
-    return std::make_pair(4, 5);}
+template <typename T0, typename T1>
+struct my_tuple {
+    T0 first;
+    T1 second;
+
+    my_tuple (T0 first, T1 second) :
+            first  (first),
+            second (second)
+        {}
+
+    template <typename U0, typename U1>
+    my_tuple& operator = (std::pair<U0, U1> p) {
+        first   = p.first;
+        second = p.second;
+        return *this;}};
+
+template <typename T0, typename T1>
+my_tuple<T0&, T1&> my_tie (T0& first, T1& second) {
+    return my_tuple<T0&, T1&>(first, second);}
 
 int main () {
     using namespace std;
     using namespace boost;
     cout << "Tuples.c++" << endl;
 
-    typedef tuple<int&, int&> tuple_type;
+    typedef    tuple<int&, int&>    tuple_type;
+    typedef my_tuple<int&, int&> my_tuple_type;
 
     int v1 = 2;
     int v2 = 3;
@@ -28,10 +46,23 @@ int main () {
     }
 
     {
+    const my_tuple_type x(v1, v2);
+    assert(&x.first  == &v1);
+    assert(&x.second == &v2);
+    }
+
+    {
     const tuple_type x(v1, v2);
     const tuple_type y = x;
     assert(&y.get<0>() == &v1);
     assert(&y.get<1>() == &v2);
+    }
+
+    {
+    const my_tuple_type x(v1, v2);
+    const my_tuple_type y = x;
+    assert(&y.first  == &v1);
+    assert(&y.second == &v2);
     }
 
     {
@@ -40,9 +71,22 @@ int main () {
     }
 
     {
+    assert(&my_tie(v1, v2).first  == &v1);
+    assert(&my_tie(v1, v2).second == &v2);
+    }
+
+    {
     int i = 2;
     int j = 3;
-    tie(i, j) = f();
+    tie(i, j) = make_pair(4, 5);
+    assert(i == 4);
+    assert(j == 5);
+    }
+
+    {
+    int i = 2;
+    int j = 3;
+    my_tie(i, j) = make_pair(4, 5);
     assert(i == 4);
     assert(j == 5);
     }
