@@ -2,6 +2,11 @@
 // Functions.c++
 // -------------
 
+/*
+% g++-4.5 -pedantic -std=c++0x -Wall Functions.c++ -o Functions.c++.app
+% Functions.c++.app
+*/
+
 #include <cassert>    // assert
 #include <functional> // multiplies, plus
 #include <iostream>   // cout, endl
@@ -73,14 +78,14 @@ int main () {
     assert(f(plus_2,       2, 3, 4) ==  9);
     assert(f(multiplies_2, 2, 3, 4) == 24);
 
-//  assert(f(plus_3(),       2, 3, 4) ==  9); // doesn't compile
-//  assert(f(multiplies_3(), 2, 3, 4) == 24); // doesn't compile
+//  assert(f(plus_3(),       2, 3, 4) ==  9); // error: cannot convert ‘plus_3’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
+//  assert(f(multiplies_3(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies_3’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
 
-//  assert(f(plus_4<int>(),       2, 3, 4) ==  9); // doesn't compile
-//  assert(f(multiplies_4<int>(), 2, 3, 4) == 24); // doesn't compile
+//  assert(f(plus_4<int>(),       2, 3, 4) ==  9); // error: cannot convert ‘plus_4<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
+//  assert(f(multiplies_4<int>(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies_4<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
 
-//  assert(f(plus<int>(),       2, 3, 4) ==  9); // doesn't compile
-//  assert(f(multiplies<int>(), 2, 3, 4) == 24); // doesn't compile
+//  assert(f(plus<int>(),       2, 3, 4) ==  9); // error: cannot convert ‘plus<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
+//  assert(f(multiplies<int>(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
 
     assert(f([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
     assert(f([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
