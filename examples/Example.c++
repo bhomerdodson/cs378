@@ -1,6 +1,6 @@
-// -------
-// Max.c++
-// -------
+// -----------
+// Example.c++
+// -----------
 
 #include <algorithm> // max
 #include <cassert>   // assert
@@ -34,7 +34,7 @@ const T& my_max (const T& x, const T& y) {
 
 int main () {
     using namespace std;
-    cout << "Max.c++" << endl;
+    cout << "Example.c++" << endl;
 
     {
     A x = 2;
