@@ -34,7 +34,7 @@ int main () {
     const char* const p = copy(a, a + s, x);
     assert(strcmp(x, "abCbAxxx") == 0);
     assert(p - x == s);
-    assert(!strncmp(x, "abCbA", s));
+    assert(strncmp(x, "abCbA", s) == 0);
     }
 
     {
