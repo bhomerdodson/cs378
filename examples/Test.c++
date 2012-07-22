@@ -1,54 +1,74 @@
-// -------
-// Max.c++
-// -------
+// ----------
+// Count1.c++
+// ----------
 
-#include <algorithm> // max
+#include <algorithm> // count, count_if
 #include <cassert>   // assert
+#include <cstddef>   // ptrdiff_t
+#include <cstring>   // strlen
 #include <iostream>  // cout, endl
 
-struct A {
-    friend bool operator < (const A& lhs, const A& rhs) {
-        return lhs._n < rhs._n;}
+std::ptrdiff_t count_1 (const char* b, const char* e, char v) {
+    std::ptrdiff_t c = 0;
+    while (b != e) {
+        if (*b == v)
+            ++c;
+        ++b;}
+    return c;}
 
-    int _n;
+template <typename II, typename T>
+std::ptrdiff_t count_2 (II b, II e, const T& v) {
+    std::ptrdiff_t c = 0;
+    while (b != e) {
+        if (*b == v)
+            ++c;
+        ++b;}
+    return c;}
 
-    A (int n) :
-            _n (n)
-        {}};
+std::ptrdiff_t count__if_1 (const char* b, const char* e, bool (*f) (char)) {
+    std::ptrdiff_t c = 0;
+    while (b != e) {
+        if (f(*b))
+            ++c;
+        ++b;}
+    return c;}
 
-struct B {
-    friend bool operator < (const B& lhs, const B& rhs) {
-        return lhs._n < rhs._n;}
+template <typename II, typename UP>
+std::ptrdiff_t count__if_2 (II b, II e, UP f) {
+    std::ptrdiff_t c = 0;
+    while (b != e) {
+        if (f(*b))
+            ++c;
+        ++b;}
+    return c;}
 
-    int _n;
-
-    B (int n) :
-            _n (n)
-        {}};
-
-template <typename T>
-const T& my_max (const T& x, const T& y) {
-    if (x < y)
-        return y;
-    return x;}
+bool my_isupper (char c) {
+    return (c >= 'A') && (c <= 'Z');}
 
 int main () {
     using namespace std;
-    cout << "Max.c++" << endl;
+    cout << "Count1.c++" << endl;
 
-    {
-    A x = 2;
-    A y = 3;
-    assert(&   max(x, y) == &y);
-    assert(&my_max(x, y) == &y);
-    }
+    typedef bool (*CUP) (char);
 
-    {
-    B x = 2;
-    B y = 3;
-    assert(&   max(x, y) == &y);
-    assert(&my_max(x, y) == &y);
-    }
+    const char a[] = "abCbA";
+    const int  s   = strlen(a);
+    const CUP  p   = my_isupper;
+
+    assert(count   (a, a + s, 'b')        == 2);
+    assert(count   (a, a + s, 'd')        == 0);
+    assert(count_if(a, a + s, my_isupper) == 2);
+    assert(count_if(a, a + s, p)          == 2);
+
+    assert(count_1   (a, a + s, 'b')        == 2);
+    assert(count_1   (a, a + s, 'd')        == 0);
+    assert(count__if_1(a, a + s, my_isupper) == 2);
+    assert(count__if_1(a, a + s, p)          == 2);
+
+    assert(count_2   (a, a + s, 'b')        == 2);
+    assert(count_2   (a, a + s, 'd')        == 0);
+    assert(count__if_2(a, a + s, my_isupper) == 2);
+    assert(count__if_2(a, a + s, p)          == 2);
 
     cout << "Done." << endl;
     return 0;}
