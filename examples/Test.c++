@@ -1,74 +1,56 @@
-// ----------
-// Count1.c++
-// ----------
+// ----------------------------
+// projects/graph/TestGraph.c++
+// Copyright (C) 2012
+// Glenn P. Downing
+// ----------------------------
 
-#include <algorithm> // count, count_if
-#include <cassert>   // assert
-#include <cstddef>   // ptrdiff_t
-#include <cstring>   // strlen
-#include <iostream>  // cout, endl
+// --------
+// includes
+// --------
 
-std::ptrdiff_t count_1 (const char* b, const char* e, char v) {
-    std::ptrdiff_t c = 0;
-    while (b != e) {
-        if (*b == v)
-            ++c;
-        ++b;}
-    return c;}
+#include <iostream> // cout, endl
+#include <iterator> // ostream_iterator
+#include <sstream>  // ostringstream
+#include <utility>  // pair
 
-template <typename II, typename T>
-std::ptrdiff_t count_2 (II b, II e, const T& v) {
-    std::ptrdiff_t c = 0;
-    while (b != e) {
-        if (*b == v)
-            ++c;
-        ++b;}
-    return c;}
+#include "boost/graph/adjacency_list.hpp" // adjacency_list
 
-std::ptrdiff_t count__if_1 (const char* b, const char* e, bool (*f) (char)) {
-    std::ptrdiff_t c = 0;
-    while (b != e) {
-        if (f(*b))
-            ++c;
-        ++b;}
-    return c;}
-
-template <typename II, typename UP>
-std::ptrdiff_t count__if_2 (II b, II e, UP f) {
-    std::ptrdiff_t c = 0;
-    while (b != e) {
-        if (f(*b))
-            ++c;
-        ++b;}
-    return c;}
-
-bool my_isupper (char c) {
-    return (c >= 'A') && (c <= 'Z');}
+// ----
+// main
+// ----
 
 int main () {
     using namespace std;
-    cout << "Count1.c++" << endl;
+    using namespace boost;
+    cout << boolalpha;
 
-    typedef bool (*CUP) (char);
+    typedef adjacency_list<setS, vecS, directedS> graph_type;
 
-    const char a[] = "abCbA";
-    const int  s   = strlen(a);
-    const CUP  p   = my_isupper;
+    typedef graph_type::vertex_descriptor         vertex_descriptor;
+    typedef graph_type::edge_descriptor           edge_descriptor;
 
-    assert(count   (a, a + s, 'b')        == 2);
-    assert(count   (a, a + s, 'd')        == 0);
-    assert(count_if(a, a + s, my_isupper) == 2);
-    assert(count_if(a, a + s, p)          == 2);
+    typedef graph_type::vertex_iterator           vertex_iterator;
+    typedef graph_type::edge_iterator             edge_iterator;
+    typedef graph_type::adjacency_iterator        adjacency_iterator;
 
-    assert(count_1   (a, a + s, 'b')        == 2);
-    assert(count_1   (a, a + s, 'd')        == 0);
-    assert(count__if_1(a, a + s, my_isupper) == 2);
-    assert(count__if_1(a, a + s, p)          == 2);
+    typedef graph_type::vertices_size_type        vertices_size_type;
+    typedef graph_type::edges_size_type           edges_size_type;
 
-    assert(count_2   (a, a + s, 'b')        == 2);
-    assert(count_2   (a, a + s, 'd')        == 0);
-    assert(count__if_2(a, a + s, my_isupper) == 2);
-    assert(count__if_2(a, a + s, p)          == 2);
+    graph_type        g;
+    vertex_descriptor v;
+    edge_descriptor   e;
+    bool              b;
+
+    v = add_vertex(g);
+    assert(v == 0);
+    v = add_vertex(g);
+    assert(v == 1);
+    v = add_vertex(g);
+    assert(v == 2);
+
+    tie(e, b) = add_edge(0, 1, g);
+    cout << e << endl;
+    cout << b << endl;
 
     cout << "Done." << endl;
     return 0;}
