@@ -29,7 +29,8 @@ To test the program:
 #include <sstream>  // ostringstream
 #include <utility>  // pair
 
-#include "boost/graph/adjacency_list.hpp" // adjacency_list
+#include "boost/graph/adjacency_list.hpp"  // adjacency_list
+#include "boost/graph/topological_sort.hpp"// topological_sort
 
 #include "cppunit/extensions/HelperMacros.h" // CPPUNIT_TEST, CPPUNIT_TEST_SUITE, CPPUNIT_TEST_SUITE_END
 #include "cppunit/TestFixture.h"             // TestFixture

@@ -39,7 +39,7 @@ void test_map_2 () {
     typedef map_type::value_type value_type;
     typedef map_type::iterator   iterator;
 
-    map_type                  x;
+    map_type             x;
     pair<iterator, bool> p = x.insert(value_type(2, 3));
     cout << (x[4]     == 0) << " ";
     cout << (x.size() == 1) << endl;}
