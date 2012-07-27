@@ -1,60 +1,58 @@
-// ----------
-// Remove.c++
-// ----------
+// ------------
+// IsSorted.c++
+// ------------
 
-#include <algorithm> // remove, remove_copy
-#include <cassert>   // assert
-#include <cstring>   // strcmp, strlen, strncmp
-#include <iostream>  // cout, endl
+#include <algorithm>  // sort
+#include <functional> // greater
+#include <iostream>   // cout, endl
+#include <cassert>    // assert
+#include <cstdlib>    // rand
 
-char* my_remove1 (char* b, char* e, char v) {
-    char* x = b;
+#include "IsSorted.h"
+
+template <typename FI>
+void random_fill (FI b, FI e) {
     while (b != e) {
-        if (*b != v) {
-            *x = *b;
-            ++x;}
-        ++b;}
-    return x;}
-
-template <typename FI, typename T>
-FI my_remove2 (FI b, FI e, const T& v) {
-    FI x = b;
-    while (b != e) {
-        if (*b != v) {
-            *x = *b;
-            ++x;}
-        ++b;}
-    return x;}
+        *b = std::rand();
+        ++b;}}
 
 int main () {
     using namespace std;
-    cout << "Remove.c++" << endl;
+    cout << "IsSorted.c++" << endl;
 
     {
-          char        a[] = "abCbA";
-    const int         s   = strlen(a);
-    const char* const p   = remove(a, a + s, 'b');
-    assert(strcmp(a, "aCAbA") == 0);
-    assert(p - a == 3);
-    assert(!strncmp(a, "aCA", 3));
+    int a[] = {2, 3, 4, 1};
+    assert( issorted(a, a));
+    assert( issorted(a, a + 1));
+    assert( issorted(a, a + 2));
+    assert( issorted(a, a + 3));
+    assert(!issorted(a, a + 4));
     }
+
+    for (int i = 0; i < 10; ++i) {
+        const int s = 1000;
+              int a[s];
+        random_fill(a, a + s);
+        assert(!issorted(a, a + s));
+        sort(a, a + s);
+        assert( issorted(a, a + s));}
 
     {
-          char        a[] = "abCbA";
-    const int         s   = strlen(a);
-    const char* const p   = my_remove1(a, a + s, 'b');
-    assert(strcmp(a, "aCAbA") == 0);
-    assert(p - a == 3);
-    assert(!strncmp(a, "aCA", 3));
+    int a[] = {4, 3, 2, 5};
+    assert( issorted(a, a,     greater<int>()));
+    assert( issorted(a, a + 1, greater<int>()));
+    assert( issorted(a, a + 2, greater<int>()));
+    assert( issorted(a, a + 3, greater<int>()));
+    assert(!issorted(a, a + 4, greater<int>()));
     }
 
-    {
-          char        a[] = "abCbA";
-    const int         s   = strlen(a);
-    const char* const p   = my_remove2(a, a + s, 'b');
-    assert(strcmp(a, "aCAbA") == 0);
-    assert(p - a == 3);
-    assert(!strncmp(a, "aCA", 3));
-    }
+    for (int i = 0; i < 10; ++i) {
+        const int s = 1000;
+              int a[s];
+        random_fill(a, a + s);
+        assert(!issorted(a, a + s, greater<int>()));
+        sort(a, a + s, greater<int>());
+        assert( issorted(a, a + s, greater<int>()));}
 
+    cout << "Done." << endl;
     return 0;}

@@ -12,7 +12,20 @@ bool issorted (II b, II e) {
     II p = b;
     ++b;
     while (b != e) {
-        if (*p > *b)
+        if (*b < *p)
+            return false;
+        ++p;
+        ++b;}
+    return true;}
+
+template <typename II, typename BP>
+bool issorted (II b, II e, BP f) {
+    if (b == e)
+        return true;
+    II p = b;
+    ++b;
+    while (b != e) {
+        if (f(*b, *p))
             return false;
         ++p;
         ++b;}
