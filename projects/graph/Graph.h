@@ -231,7 +231,7 @@ bool has_cycle (const G& g) {
  * depth-first traversal
  * two colors
  * <your documentation>
- * @throws Boost's not_a_dag exception if !has_cycle()
+ * @throws Boost's not_a_dag exception if has_cycle()
  */
 template <typename G, typename OI>
 void topological_sort (const G& g, OI x) {
