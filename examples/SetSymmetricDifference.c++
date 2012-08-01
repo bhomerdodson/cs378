@@ -15,12 +15,12 @@ OI my_set_symmetric_difference (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
     while ((b1 != e1) && (b2 != e2)) {
         if (*b1 < *b2) {
             *x = *b1;
-            ++x;
-            ++b1;}
+            ++b1;
+            ++x;}
         else if (*b2 < *b1) {
             *x = *b2;
-            ++x;
-            ++b2;}
+            ++b2;
+            ++x;}
         else {
             ++b1;
             ++b2;}}

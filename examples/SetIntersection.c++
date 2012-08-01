@@ -19,9 +19,9 @@ OI my_set_intersection (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
             ++b2;
         else {
             *x = *b1;
-            ++x;
             ++b1;
-            ++b2;}}
+            ++b2;
+            ++x;}}
     return x;}
 
 int main () {
