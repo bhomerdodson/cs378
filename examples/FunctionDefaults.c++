@@ -41,8 +41,12 @@ int h (int i) {
 int h (int i, int j = 0) {
     return i + j;}
 
-//int m (int i, int j = i) { // error: "i" was not declared in this scope
+//int x (int i, int j = i) { // error: "i" was not declared in this scope
 //    return i + j;}
+
+template <typename T>
+int y (int z = 0) {   // can't default in a function template
+    return z;}
 
 int main () {
     using namespace std;
@@ -54,6 +58,8 @@ int main () {
 
 //  h(10);                   // error: call of overloaded "h(int)" is ambiguous
     assert(h(11, 12) == 23);
+
+//  y(); // error: no matching function for call to ‘m()’
 
     cout << "Done." << endl;
     return 0;}
