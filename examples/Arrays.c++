@@ -29,37 +29,39 @@ int main () {
 
     {
     int a[] = {2, 3, 4};
-    assert(*a == a[0]);
-    assert(a  == &a[0]);
-    assert(sizeof(a)     != sizeof(&a[0]));
-    assert(sizeof(a)     == 12);
-    assert(sizeof(&a[0]) == 8);
-//  ++a;                                    // error: lvalue required as left operand of assignment
+//  assert(a                     == &a);                     // error: comparison between distinct pointer types ‘int*’ and ‘int (*)[3]’ lacks a cast
+	assert(static_cast<void*>(a) == static_cast<void*>(&a));
+    assert(*a                    == a[0]);
+    assert(a                     == &a[0]);
+    assert(sizeof(a)             != sizeof(&a[0]));
+    assert(sizeof(a)             == 12);
+    assert(sizeof(&a[0])         == 8);
+//  ++a;                                                     // error: lvalue required as left operand of assignment
     ++a[0];
     assert(*a   == 3);
-//  assert(a[3] == 0);                      // undefined
+//  assert(a[3] == 0);                                       // undefined
     }
 
     {
-    const std::size_t s = 10;
-    const int         a[s] = {2, 3, 4};
+    const size_t s    = 10;
+    const int    a[s] = {2, 3, 4};
     assert(a[1]     == 3);
     assert(*(a + 1) == 3);
     assert(a[s - 1] == 0);
-//  ++a;                                // error: lvalue required as left operand of assignment
-//  ++a[1];                             // error: increment of read-only location
+//  ++a;                           // error: lvalue required as left operand of assignment
+//  ++a[1];                        // error: increment of read-only location
     }
 
     {
-    const std::size_t s = 10;
-//  const int         a[s];   // error: uninitialized const 'a'
+    const size_t s = 10;
+//  const int    a[s];   // error: uninitialized const 'a'
     int a[s];
-//  assert(a[0] == 0);        // undetermined
+    assert(a[0] == 0);   // undefined
     }
 
     {
-    const std::size_t s = 10;
-    const int         a[s] = {};
+    const size_t s    = 10;
+    const int    a[s] = {};
     assert(a[0] == 0);
     }
 
@@ -125,11 +127,11 @@ int main () {
     }
 
     {
-    const std::size_t       s = 10;
-    const int               v =  2;
-          int*        const a = new int[s];
+    const ptrdiff_t  s = 10;
+    const int        v =  2;
+          int* const a = new int[s];
     fill(a, a + s, v);
-    assert(count(a, a + s, v) == s);        // warning: comparison between signed and unsigned integer expressions
+    assert(count(a, a + s, v) == s);
     f1(a);
     assert(a[1] == v + 2);
     f2(a);
@@ -138,9 +140,9 @@ int main () {
     }
 
     {
-    const std::size_t       s = 10;
-    const int               v =  2;
-          int*        const a = new int[s];
+    const size_t     s = 10;
+    const int        v =  2;
+          int* const a = new int[s];
     fill(a, a + s, v);
     int* const b = a;
     assert(&a[1] == &b[1]);
@@ -153,9 +155,9 @@ int main () {
     }
 
     {
-    const std::size_t       s = 10;
-    const int               v =  2;
-          int*        const a = new int[s];
+    const size_t     s = 10;
+    const int        v =  2;
+          int* const a = new int[s];
     fill(a, a + s, v);
     int* b = new int[s];
     fill(b, b + s, v);
@@ -191,7 +193,7 @@ int main () {
     }
 
     {
-    const std::size_t s = 10;
+    const  size_t     s = 10;
     const int         v =  2;
           vector<int> x(s, v);
     assert(x.size() == s);

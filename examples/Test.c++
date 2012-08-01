@@ -1,216 +1,115 @@
-// ----------
-// Arrays.c++
-// ----------
+// -------------
+// Functions.c++
+// -------------
 
-#include <algorithm> // copy, count, equal, fill
-#include <cassert>   // assert
-#include <cstddef>   // ptrdiff_t, size_t
-#include <iostream>  // cout, endl
-#include <vector>    // vector
+/*
+% g++-4.5 -pedantic -std=c++0x -Wall Functions.c++ -o Functions.c++.app
+% Functions.c++.app
+*/
 
-struct A     {int i; void f () {}};
-struct B : A {int j; void f () {}};
+#include <cassert>    // assert
+#include <functional> // multiplies, plus
+#include <iostream>   // cout, endl
 
-void f1 (int p[]) {
-    assert(sizeof(p) == 8);
-    ++p;
-    ++p[0];
-    ++*p;}
+int plus_1 (int x, int y) {
+    return x + y;}
 
-void f2 (int* p) {
-    assert(sizeof(p) == 8);
-    ++p;
-    ++p[0];
-    ++*p;}
+int multiplies_1 (int x, int y) {
+    return x * y;}
+
+template <typename T>
+T plus_2 (T x, T y) {
+    return x + y;}
+
+template <typename T>
+T multiplies_2 (T x, T y) {
+    return x * y;}
+
+struct plus_3 {
+    int operator () (int x, int y) const {
+        return x + y;}};
+
+struct multiplies_3 {
+    int operator () (int x, int y) const {
+        return x * y;}};
+
+template <typename T>
+struct plus_4 {
+    T operator () (const T& x, const T& y) const {
+        return x + y;}};
+
+template <typename T>
+struct multiplies_4 {
+    T operator () (const T& x, const T& y) const {
+        return x * y;}};
+
+int f (int (*bf) (int, int), int x, int y, int z) {
+    assert(*bf == bf);
+    return bf(bf(x, y), z);}
+
+template <typename BF, typename T>
+T g (BF bf, const T& x, const T& y, const T& z) {
+    return bf(bf(x, y), z);}
 
 int main () {
     using namespace std;
-    cout << "Arrays.c++" << endl;
+    cout << "Functions.c++" << endl;
 
-    {
-    int a[] = {2, 3, 4};
-    assert((void*)a  == (void*)&a);
-    assert(*a == a[0]);
-    assert(a  == &a[0]);
-    assert(sizeof(a)     != sizeof(&a[0]));
-    assert(sizeof(a)     == 12);
-    assert(sizeof(&a[0]) == 8);
-//  ++a;                                    // error: lvalue required as left operand of assignment
-    ++a[0];
-    assert(*a   == 3);
-//  assert(a[3] == 0);                      // undefined
-    }
+    assert(plus_1 == &plus_1);
 
-    {
-    const std::size_t s = 10;
-    const int         a[s] = {2, 3, 4};
-    assert(a[1]     == 3);
-    assert(*(a + 1) == 3);
-    assert(a[s - 1] == 0);
-//  ++a;                                // error: lvalue required as left operand of assignment
-//  ++a[1];                             // error: increment of read-only location
-    }
+    assert(plus_1      (2, 3) == 5);
+    assert(multiplies_1(2, 3) == 6);
 
-    {
-    const std::size_t s = 10;
-//  const int         a[s];   // error: uninitialized const 'a'
-    int a[s];
-//  assert(a[0] == 0);        // undetermined
-    }
+    assert(plus_2      (2, 3) == 5);
+    assert(multiplies_2(2, 3) == 6);
 
-    {
-    const std::size_t s = 10;
-    const int         a[s] = {};
-    assert(a[0] == 0);
-    }
+    assert(plus_3()      (2, 3) == 5);
+    assert(multiplies_3()(2, 3) == 6);
 
-    {
-    int a[] = {2, 3, 4};
-    assert(a[1] == 3);
-    f1(a);
-    assert(a[1] == 5);
-    f2(a);
-    assert(a[1] == 7);
-    }
+    assert(plus_4<int>()      (2, 3) == 5);
+    assert(multiplies_4<int>()(2, 3) == 6);
 
-    {
-    int        a[] = {2, 3, 4};
-//  int        b[] = a;             // error: initializer fails to determine size of 'b'
-    int* const b   = a;
-    assert(a         == b);
-    assert(sizeof(a) != sizeof(b));
-    assert(sizeof(a) == 12);
-    assert(sizeof(b) ==  8);
-    ++a[1];
-    assert(a[1] == 4);
-    assert(b[1] == 4);
-    }
+    assert(plus<int>()      (2, 3) == 5);
+    assert(multiplies<int>()(2, 3) == 6);
 
-    {
-    int          a[] = {2, 3, 4};
-    const size_t s   = sizeof(a) / sizeof(a[0]);
-    int b[s];
-    copy(a, a + s, b);
-    assert(a != b);
-    assert(equal(a, a + s, b));
-    ++a[1];
-    assert(a[1] == 4);
-    assert(b[1] == 3);
-    }
+    assert([](int x, int y) {return x + y;}(2, 3) == 5);
+    assert([](int x, int y) {return x * y;}(2, 3) == 6);
 
-    {
-    int a[] = {2, 3, 4};
-    int b[] = {5, 6, 7};
-//  b = a;                                     // error: invalid array assignment
-    const size_t s = sizeof(a) / sizeof(a[0]);
-    copy(a, a + s, b);
-    assert(a != b);
-    assert(equal(a, a + s, b));
-    ++a[1];
-    assert(a[1] == 4);
-    assert(b[1] == 3);
-    }
+    assert(f(plus_1,       2, 3, 4) ==  9);
+    assert(f(multiplies_1, 2, 3, 4) == 24);
 
-    {
-    int a[] = {2, 3, 4};
-    int b[] = {2, 2, 3};
-    copy(a, a + 2, a + 1);      // GNU optimization
-    assert(equal(a, a + 3, b));
-    }
+    assert(f(plus_2,       2, 3, 4) ==  9);
+    assert(f(multiplies_2, 2, 3, 4) == 24);
 
-    {
-    int a[] = {2, 3, 4};
-    int b[] = {3, 4, 4};
-    copy(a + 1, a + 3, a);
-    assert(equal(a, a + 3, b));
-    }
+//  assert(f(plus_3(),       2, 3, 4) ==  9); // error: cannot convert ‘plus_3’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
+//  assert(f(multiplies_3(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies_3’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
 
-    {
-    const std::size_t       s = 10;
-    const int               v =  2;
-          int*        const a = new int[s];
-    fill(a, a + s, v);
-    assert(count(a, a + s, v) == s);        // warning: comparison between signed and unsigned integer expressions
-    f1(a);
-    assert(a[1] == v + 2);
-    f2(a);
-    assert(a[1] == v + 4);
-    delete [] a;
-    }
+//  assert(f(plus_4<int>(),       2, 3, 4) ==  9); // error: cannot convert ‘plus_4<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
+//  assert(f(multiplies_4<int>(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies_4<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
 
-    {
-    const std::size_t       s = 10;
-    const int               v =  2;
-          int*        const a = new int[s];
-    fill(a, a + s, v);
-    int* const b = a;
-    assert(&a[1] == &b[1]);
-    int* const x = new int[s];
-    copy(a, a + s, x);
-    assert( a[1] ==  x[1]);
-    assert(&a[1] != &x[1]);
-    delete [] a;
-    delete [] x;
-    }
+//  assert(f(plus<int>(),       2, 3, 4) ==  9); // error: cannot convert ‘plus<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
+//  assert(f(multiplies<int>(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
 
-    {
-    const std::size_t       s = 10;
-    const int               v =  2;
-          int*        const a = new int[s];
-    fill(a, a + s, v);
-    int* b = new int[s];
-    fill(b, b + s, v);
-//  b = a;                                  // memory leak
-    copy(a, a + s, b);
-    assert( a[1] ==  b[1]);
-    assert(&a[1] != &b[1]);
-    delete [] a;
-    delete [] b;
-    }
+    assert(f([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
+    assert(f([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
 
-    {
-//  int*    const a = new double[10]; // error: cannot convert 'double*' to 'int*    const' in initialization
-//  double* const a = new int[10];    // error: cannot convert 'int*'    to 'double* const' in initialization
-    }
+    assert(g(plus_1,       2, 3, 4) ==  9);
+    assert(g(multiplies_1, 2, 3, 4) == 24);
 
-    {
-//  B a[] = {A(), A(), A()}; // error: conversion from "A" to non-scalar type "B" requested
-    }
+    assert(g(plus_2<int>,       2, 3, 4) ==  9);
+    assert(g(multiplies_2<int>, 2, 3, 4) == 24);
 
-    {
-    A a[] = {B(), B(), B()}; // slice
-    a[1].f();                // A::f();
-    }
+    assert(g(plus_3(),       2, 3, 4) ==  9);
+    assert(g(multiplies_3(), 2, 3, 4) == 24);
 
-    {
-    A* const a = new B[10];       // dangerous
-    a[0].f();                     // A::f()
-//  a[1].f();                     // undefined
-//  delete [] a;                  // undefined
-    static_cast<B*>(a)[1].f();    // B::f()
-    delete [] static_cast<B*>(a); // ~B::B() and ~A::A()
-    }
+    assert(g(plus_4<int>(),       2, 3, 4) ==  9);
+    assert(g(multiplies_4<int>(), 2, 3, 4) == 24);
 
-    {
-    const std::size_t s = 10;
-    const int         v =  2;
-          vector<int> x(s, v);
-    assert(x.size() == s);
-    assert(x[0]     == v);
-    vector<int> y(x);
-    assert(x.size() == y.size());
-    assert( x[1]    ==  y[1]);
-    assert(&x[1]    != &y[1]);
-    vector<int> z(2 * s, v);
-    x = z;
-    assert(x.size() == z.size());
-    assert( x[1]    ==  z[1]);
-    assert(&x[1]    != &z[1]);
-    }
+    assert(g(plus<int>(),       2, 3, 4) ==  9);
+    assert(g(multiplies<int>(), 2, 3, 4) == 24);
 
-    {
-//  vector<A>* const p = new vector<B>; // error: cannot convert 'std::vector<B, std::allocator<B> >*' to 'std::vector<A, std::allocator<A> >* const' in initialization
-    }
+    assert(g([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
+    assert(g([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
 
     cout << "Done." << endl;
     return 0;}
