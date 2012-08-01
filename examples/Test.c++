@@ -1,115 +1,54 @@
-// -------------
-// Functions.c++
-// -------------
+// -------------------
+// SetIntersection.c++
+// -------------------
 
-/*
-% g++-4.5 -pedantic -std=c++0x -Wall Functions.c++ -o Functions.c++.app
-% Functions.c++.app
-*/
+#include <algorithm> // copy, equal, set_intersection
+#include <cassert>   // assert
+#include <iostream>  // cout, endl
 
-#include <cassert>    // assert
-#include <functional> // multiplies, plus
-#include <iostream>   // cout, endl
+#include "IsSorted.h"
 
-int plus_1 (int x, int y) {
-    return x + y;}
-
-int multiplies_1 (int x, int y) {
-    return x * y;}
-
-template <typename T>
-T plus_2 (T x, T y) {
-    return x + y;}
-
-template <typename T>
-T multiplies_2 (T x, T y) {
-    return x * y;}
-
-struct plus_3 {
-    int operator () (int x, int y) const {
-        return x + y;}};
-
-struct multiplies_3 {
-    int operator () (int x, int y) const {
-        return x * y;}};
-
-template <typename T>
-struct plus_4 {
-    T operator () (const T& x, const T& y) const {
-        return x + y;}};
-
-template <typename T>
-struct multiplies_4 {
-    T operator () (const T& x, const T& y) const {
-        return x * y;}};
-
-int f (int (*bf) (int, int), int x, int y, int z) {
-    assert(*bf == bf);
-    return bf(bf(x, y), z);}
-
-template <typename BF, typename T>
-T g (BF bf, const T& x, const T& y, const T& z) {
-    return bf(bf(x, y), z);}
+template <typename II1, typename II2, typename OI>
+OI my_set_intersection (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
+    assert(issorted(b1, e1));
+    assert(issorted(b2, e2));
+    while ((b1 != e1) && (b2 != e2)) {
+        if (*b1 < *b2)
+            ++b1;
+        else if (*b2 < *b1)
+            ++b2;
+        else {
+            *x = *b1;
+            ++b1;
+            ++b2;
+            ++x;}}
+    return x;}
 
 int main () {
     using namespace std;
-    cout << "Functions.c++" << endl;
+    cout << "SetIntersection.c++" << endl;
 
-    assert(plus_1 == &plus_1);
+    const int a[] = {2, 4, 4, 6, 7, 7, 8, 9, 9};
+    const int b[] = {3, 5, 5, 6, 7, 7, 8, 8, 9};
+    const int c[] = {6, 7, 7, 8, 9};
 
-    assert(plus_1      (2, 3) == 5);
-    assert(multiplies_1(2, 3) == 6);
+    const int s = sizeof(a) / sizeof(a[0]);
+    const int t = sizeof(b) / sizeof(b[0]);
+    const int u = sizeof(c) / sizeof(c[0]);
 
-    assert(plus_2      (2, 3) == 5);
-    assert(multiplies_2(2, 3) == 6);
+    {
+    int x[u];
+    set_intersection(a, a + s, b, b + t, x);
+    assert(issorted(x, x + u));
+    assert(equal(x, x + u, c));
+    }
 
-    assert(plus_3()      (2, 3) == 5);
-    assert(multiplies_3()(2, 3) == 6);
-
-    assert(plus_4<int>()      (2, 3) == 5);
-    assert(multiplies_4<int>()(2, 3) == 6);
-
-    assert(plus<int>()      (2, 3) == 5);
-    assert(multiplies<int>()(2, 3) == 6);
-
-    assert([](int x, int y) {return x + y;}(2, 3) == 5);
-    assert([](int x, int y) {return x * y;}(2, 3) == 6);
-
-    assert(f(plus_1,       2, 3, 4) ==  9);
-    assert(f(multiplies_1, 2, 3, 4) == 24);
-
-    assert(f(plus_2,       2, 3, 4) ==  9);
-    assert(f(multiplies_2, 2, 3, 4) == 24);
-
-//  assert(f(plus_3(),       2, 3, 4) ==  9); // error: cannot convert ‘plus_3’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
-//  assert(f(multiplies_3(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies_3’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
-
-//  assert(f(plus_4<int>(),       2, 3, 4) ==  9); // error: cannot convert ‘plus_4<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
-//  assert(f(multiplies_4<int>(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies_4<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
-
-//  assert(f(plus<int>(),       2, 3, 4) ==  9); // error: cannot convert ‘plus<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
-//  assert(f(multiplies<int>(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
-
-    assert(f([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
-    assert(f([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
-
-    assert(g(plus_1,       2, 3, 4) ==  9);
-    assert(g(multiplies_1, 2, 3, 4) == 24);
-
-    assert(g(plus_2<int>,       2, 3, 4) ==  9);
-    assert(g(multiplies_2<int>, 2, 3, 4) == 24);
-
-    assert(g(plus_3(),       2, 3, 4) ==  9);
-    assert(g(multiplies_3(), 2, 3, 4) == 24);
-
-    assert(g(plus_4<int>(),       2, 3, 4) ==  9);
-    assert(g(multiplies_4<int>(), 2, 3, 4) == 24);
-
-    assert(g(plus<int>(),       2, 3, 4) ==  9);
-    assert(g(multiplies<int>(), 2, 3, 4) == 24);
-
-    assert(g([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
-    assert(g([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
+    {
+    int x[u];
+    my_set_intersection(a, a + s, b, b + t, x);
+    assert(issorted(x, x + u));
+    assert(equal(x, x + u, c));
+    }
 
     cout << "Done." << endl;
     return 0;}

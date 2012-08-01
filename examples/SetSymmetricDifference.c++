@@ -31,9 +31,9 @@ int main () {
     using namespace std;
     cout << "SetSymmetricDifference.c++" << endl;
 
-    const int a[] = {2, 4, 4, 6, 6, 7, 8, 10};
-    const int b[] = {3, 5, 5, 6, 7, 7, 9, 10};
-    const int c[] = {2, 3, 4, 4, 5, 5, 6, 7, 8, 9};
+    const int a[] = {2, 4, 4, 6, 7, 7, 8, 9, 9};
+    const int b[] = {3, 5, 5, 6, 7, 7, 8, 8, 9};
+    const int c[] = {2, 3, 4, 4, 5, 5, 8, 9};
 
     const int s = sizeof(a) / sizeof(a[0]);
     const int t = sizeof(b) / sizeof(b[0]);
