@@ -29,6 +29,7 @@ T std_dev_1 (II b, II e, T v) {
     std::transform(x.begin(), x.end(), x.begin(), sqre<int>());
     return sqrt(mean(x.begin(), x.end(), v));}
 
+// mean of the squares minus the square of the mean.
 template <typename II, typename T>
 T std_dev_2 (II b, II e, T v) {
     std::vector<T> x(std::distance(b, e));
