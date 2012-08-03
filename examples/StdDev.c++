@@ -1,6 +1,6 @@
-// ---------------------
-// StandardDeviation.c++
-// ---------------------
+// ----------
+// StdDev.c++
+// ----------
 
 #include <algorithm>  // distance, transform
 #include <cassert>    // assert
@@ -37,7 +37,7 @@ T std_dev_2 (II b, II e, T v) {
 
 int main () {
     using namespace std;
-    cout << "StandardDeviation.c++" << endl;
+    cout << "StdDev.c++" << endl;
 
     int a[] = {2, 3, 4};
 
