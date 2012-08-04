@@ -11,14 +11,14 @@
 
 using namespace std::rel_ops;
 
-template <typename BI>
+template <typename I>
 class my_reverse_iterator {
     public:
-        typedef typename std::iterator_traits<BI>::iterator_category iterator_category;
-        typedef typename std::iterator_traits<BI>::value_type        value_type;
-        typedef typename std::iterator_traits<BI>::difference_type   difference_type;
-        typedef typename std::iterator_traits<BI>::pointer           pointer;
-        typedef typename std::iterator_traits<BI>::reference         reference;
+        typedef typename std::iterator_traits<I>::iterator_category iterator_category;
+        typedef typename std::iterator_traits<I>::value_type        value_type;
+        typedef typename std::iterator_traits<I>::difference_type   difference_type;
+        typedef typename std::iterator_traits<I>::pointer           pointer;
+        typedef typename std::iterator_traits<I>::reference         reference;
 
     public:
         friend my_reverse_iterator operator + (my_reverse_iterator lhs, difference_type rhs) {
@@ -37,16 +37,16 @@ class my_reverse_iterator {
             return rhs._p < lhs._p;}
 
     private:
-        BI _p;
+        I _p;
 
     public:
-        explicit my_reverse_iterator (BI p = BI()) :
+        explicit my_reverse_iterator (I p = I()) :
                _p (p)
             {}
 
         template <typename U>
-        explicit my_reverse_iterator (const my_reverse_iterator<U>& that) :
-               _p (that._p)
+        my_reverse_iterator (const my_reverse_iterator<U>& that) :
+               _p (that.base())
             {}
 
         // Default copy, destructor, and copy assignment.
@@ -55,7 +55,7 @@ class my_reverse_iterator {
         // my_reverse_iterator& operator = (const my_reverse_iterator&);
 
         reference operator * () const {
-            BI q = _p;
+            I q = _p;
             return *--q;}
 
         pointer operator -> () const {
@@ -90,7 +90,7 @@ class my_reverse_iterator {
             _p += d;
             return *this;}
 
-        BI base () const {
+        I base () const {
             return _p;}};
 
 int main () {
@@ -100,28 +100,31 @@ int main () {
     {
     const string s = "Cba";
           string t = "xxxbA";
-    copy(
-        reverse_iterator<string::const_iterator>(s.end()),
-        reverse_iterator<string::const_iterator>(s.begin()),
-        t.begin());
+    reverse_iterator<string::const_iterator> b(s.end());
+    reverse_iterator<string::const_iterator> e(s.begin());
+    copy(b, e, t.begin());
     assert(t == "abCbA");
+    }
+
+    {
+    string s = "abCbA";
+    reverse_iterator<string::iterator>       b(s.end());
+    reverse_iterator<string::const_iterator> c = b;
     }
 
     {
     const string s = "Cba";
           string t = "xxxbA";
-    copy(
-        my_reverse_iterator<string::const_iterator>(s.end()),
-        my_reverse_iterator<string::const_iterator>(s.begin()),
-        t.begin());
+    my_reverse_iterator<string::const_iterator> b(s.end());
+    my_reverse_iterator<string::const_iterator> e(s.begin());
+    copy(b, e, t.begin());
     assert(t == "abCbA");
     }
 
     {
-    const string s = "Cba";
-          string t = "xxxbA";
-    copy(s.rbegin(), s.rend(), t.begin());
-    assert(t == "abCbA");
+    string s = "abCbA";
+    my_reverse_iterator<string::iterator>       b(s.end());
+    my_reverse_iterator<string::const_iterator> c = b;
     }
 
     {
