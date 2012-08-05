@@ -14,8 +14,9 @@
 
 template <typename A, typename U>
 void allocators (const typename A::value_type& v, const U& w) {
-    typedef typename A::size_type size_type;
-    typedef typename A::pointer   pointer_A;
+    typedef typename A::difference_type difference_type;
+    typedef typename A::size_type       size_type;
+    typedef typename A::pointer         pointer_A;
 
     {
     A z;
@@ -28,9 +29,9 @@ void allocators (const typename A::value_type& v, const U& w) {
 
     {
     A z;
-    const size_type s = 10;
-          pointer_A b = z.allocate(s);
-          pointer_A e = b + s;
+    const difference_type s = 10;
+          pointer_A       b = z.allocate(s);
+          pointer_A       e = b + s;
     my_uninitialized_fill(z, b, e, v);
     assert(std::count(b, e, v) == s);
     my_destroy(z, b, e);

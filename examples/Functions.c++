@@ -2,11 +2,6 @@
 // Functions.c++
 // -------------
 
-/*
-% g++-4.5 -pedantic -std=c++0x -Wall Functions.c++ -o Functions.c++.app
-% Functions.c++.app
-*/
-
 #include <cassert>    // assert
 #include <functional> // multiplies, plus
 #include <iostream>   // cout, endl
@@ -44,6 +39,7 @@ struct multiplies_4 {
         return x * y;}};
 
 int f (int (*bf) (int, int), int x, int y, int z) {
+    assert(bf == *bf);
     return bf(bf(x, y), z);}
 
 template <typename BF, typename T>
@@ -69,14 +65,15 @@ int main () {
     assert(plus<int>()      (2, 3) == 5);
     assert(multiplies<int>()(2, 3) == 6);
 
-    assert([](int x, int y) {return x + y;}(2, 3) == 5);
-    assert([](int x, int y) {return x * y;}(2, 3) == 6);
+    assert(f( plus_1,       2, 3, 4) ==  9);
+    assert(f( multiplies_1, 2, 3, 4) == 24);
+    assert(f(&plus_1,       2, 3, 4) ==  9);
+    assert(f(&multiplies_1, 2, 3, 4) == 24);
 
-    assert(f(plus_1,       2, 3, 4) ==  9);
-    assert(f(multiplies_1, 2, 3, 4) == 24);
-
-    assert(f(plus_2,       2, 3, 4) ==  9);
-    assert(f(multiplies_2, 2, 3, 4) == 24);
+    assert(f( plus_2,       2, 3, 4) ==  9);
+    assert(f( multiplies_2, 2, 3, 4) == 24);
+    assert(f(&plus_2,       2, 3, 4) ==  9);
+    assert(f(&multiplies_2, 2, 3, 4) == 24);
 
 //  assert(f(plus_3(),       2, 3, 4) ==  9); // error: cannot convert ‘plus_3’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
 //  assert(f(multiplies_3(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies_3’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
@@ -87,14 +84,15 @@ int main () {
 //  assert(f(plus<int>(),       2, 3, 4) ==  9); // error: cannot convert ‘plus<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
 //  assert(f(multiplies<int>(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
 
-    assert(f([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
-    assert(f([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
+    assert(g( plus_1,       2, 3, 4) ==  9);
+    assert(g( multiplies_1, 2, 3, 4) == 24);
+    assert(g(&plus_1,       2, 3, 4) ==  9);
+    assert(g(&multiplies_1, 2, 3, 4) == 24);
 
-    assert(g(plus_1,       2, 3, 4) ==  9);
-    assert(g(multiplies_1, 2, 3, 4) == 24);
-
-    assert(g(plus_2<int>,       2, 3, 4) ==  9);
-    assert(g(multiplies_2<int>, 2, 3, 4) == 24);
+    assert(g( plus_2<int>,       2, 3, 4) ==  9);
+    assert(g( multiplies_2<int>, 2, 3, 4) == 24);
+    assert(g(&plus_2<int>,       2, 3, 4) ==  9);
+    assert(g(&multiplies_2<int>, 2, 3, 4) == 24);
 
     assert(g(plus_3(),       2, 3, 4) ==  9);
     assert(g(multiplies_3(), 2, 3, 4) == 24);
@@ -104,9 +102,6 @@ int main () {
 
     assert(g(plus<int>(),       2, 3, 4) ==  9);
     assert(g(multiplies<int>(), 2, 3, 4) == 24);
-
-    assert(g([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
-    assert(g([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
 
     cout << "Done." << endl;
     return 0;}

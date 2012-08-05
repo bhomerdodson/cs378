@@ -2,11 +2,6 @@
 // Find.c++
 // --------
 
-/*
-% g++-4.5 -pedantic -std=c++0x -Wall Find.c++ -o Find.c++.app
-% Find.c++.app
-*/
-
 #include <algorithm> // find, find_if
 #include <cassert>   // assert
 #include <cstring>   // strlen

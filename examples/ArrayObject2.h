@@ -13,6 +13,8 @@
 #include <stdexcept> // out_of_range
 #include <utility>   // !=, <=, >, >=
 
+#include "Memory.h" // my_destroy, my_uninitialized_copy, my_uninitialized_fill
+
 using namespace std::rel_ops;
 
 template <typename T, std::size_t N, typename A = std::allocator<T> >

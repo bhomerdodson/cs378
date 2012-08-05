@@ -76,7 +76,7 @@ class my_vector {
 
     private:
         bool valid () const {
-            return (!_b && !_e && !_l) || (_b <= _e) && (_e <= _l);}
+            return (!_b && !_e && !_l) || ((_b <= _e) && (_e <= _l));}
 
         my_vector (const my_vector& that, size_type c) :
                 _a (that._a) {

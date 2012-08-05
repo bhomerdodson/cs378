@@ -35,10 +35,7 @@ class ArrayObject1 {
         value_type _a[N];
 
     public:
-        ArrayObject1 ()
-            {}
-
-        explicit ArrayObject1 (const_reference v) {
+        explicit ArrayObject1 (const_reference v = value_type()) {
             std::fill(begin(), end(), v);}
 
         template <typename II>

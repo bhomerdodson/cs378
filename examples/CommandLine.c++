@@ -17,9 +17,9 @@ int main (int argc, char* argv[]) {
 
     assert(argc == 5);
 
-    const string a[] = {"CommandLine.c++.app", "Nothing", "to", "be", "done."};
+    const string a[] = {"Nothing", "to", "be", "done."};
 //  assert(argv == a);
-    assert(equal(argv, argv + 5, a));
+    assert(equal(argv + 1, argv + argc, a));
 
     cout << "Done." << endl;
     return 0;}

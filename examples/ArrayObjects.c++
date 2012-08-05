@@ -13,7 +13,6 @@
 #include "ArrayObject1.h" // ArrayObject1
 #include "ArrayObject2.h" // ArrayObject2
 #include "ArrayObject3.h" // ArrayObject3
-#include "Memory.h"       // my_destroy, my_uninitialized_copy, my_uninitialized_fill
 
 template <typename T, typename U>
 void array_objects (
