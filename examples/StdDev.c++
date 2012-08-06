@@ -22,19 +22,23 @@ struct sqre : std::unary_function<T, T> {
     T operator () (const T& v) {
         return v * v;}};
 
+// square root of the mean of the squares of the differences with the mean
 template <typename II, typename T>
 T std_dev_1 (II b, II e, T v) {
     std::vector<T> x(std::distance(b, e));
     std::transform(b, e, x.begin(), std::bind2nd(std::minus<int>(), mean(b, e, v)));
     std::transform(x.begin(), x.end(), x.begin(), sqre<int>());
-    return sqrt(mean(x.begin(), x.end(), v));}
+    T msdm = mean(x.begin(), x.end(), v);
+    return sqrt(msdm);}
 
-// mean of the squares minus the square of the mean.
+// square root of the mean of the squares minus the square of the mean
 template <typename II, typename T>
 T std_dev_2 (II b, II e, T v) {
     std::vector<T> x(std::distance(b, e));
     std::transform(b, e, x.begin(), sqre<int>());
-    return std::sqrt(mean(x.begin(), x.end(), v) - sqre<T>()(mean(b, e, v)));}
+    T ms = mean(x.begin(), x.end(), v);
+    T sm = sqre<T>()(mean(b, e, v));
+    return std::sqrt(ms - sm);}
 
 int main () {
     using namespace std;

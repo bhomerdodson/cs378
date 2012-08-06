@@ -1,54 +1,60 @@
-// -------------------
-// SetIntersection.c++
-// -------------------
+// ----------
+// StdDev.c++
+// ----------
 
-#include <algorithm> // copy, equal, set_intersection
-#include <cassert>   // assert
-#include <iostream>  // cout, endl
+#include <algorithm>  // distance, transform
+#include <cassert>    // assert
+#include <cmath>      // sqrt
+#include <functional> // bind2nd, minus, unary_function
+#include <iostream>   // cout, endl
+#include <numeric>    // accumulate
+#include <vector>     // vector
 
-#include "IsSorted.h"
+template <typename II, typename T>
+T mean (II b, II e, T v) {
+    v = std::accumulate(b, e, v);
+    if (v == 0)
+        return 0;
+    return v / std::distance(b, e);}
 
-template <typename II1, typename II2, typename OI>
-OI my_set_intersection (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
-    assert(issorted(b1, e1));
-    assert(issorted(b2, e2));
-    while ((b1 != e1) && (b2 != e2)) {
-        if (*b1 < *b2)
-            ++b1;
-        else if (*b2 < *b1)
-            ++b2;
-        else {
-            *x = *b1;
-            ++b1;
-            ++b2;
-            ++x;}}
-    return x;}
+template <typename T>
+struct sqre : std::unary_function<T, T> {
+    T operator () (const T& v) {
+        return v * v;}};
+
+// square root of the mean of the squares of the differences with the mean
+template <typename II, typename T>
+T std_dev_1 (II b, II e, T v) {
+    std::vector<T> x(std::distance(b, e));
+    std::transform(b, e, x.begin(), std::bind2nd(std::minus<int>(), mean(b, e, v)));
+    std::transform(x.begin(), x.end(), x.begin(), sqre<int>());
+    T msdm = mean(x.begin(), x.end(), v);
+    return sqrt(msdm);}
+
+// square root of the mean of the squares minus the square of the mean
+template <typename II, typename T>
+T std_dev_2 (II b, II e, T v) {
+    std::vector<T> x(std::distance(b, e));
+    std::transform(b, e, x.begin(), sqre<int>());
+    T ms = mean(x.begin(), x.end(), v);
+    T sm = sqre<T>()(mean(b, e, v));
+    return std::sqrt(ms - sm);}
 
 int main () {
     using namespace std;
-    cout << "SetIntersection.c++" << endl;
+    cout << "StdDev.c++" << endl;
 
-    const int a[] = {2, 4, 4, 6, 7, 7, 8, 9, 9};
-    const int b[] = {3, 5, 5, 6, 7, 7, 8, 8, 9};
-    const int c[] = {6, 7, 7, 8, 9};
+    int a[] = {2, 3, 4};
 
-    const int s = sizeof(a) / sizeof(a[0]);
-    const int t = sizeof(b) / sizeof(b[0]);
-    const int u = sizeof(c) / sizeof(c[0]);
+    assert(std_dev_1(a, a,     0.0) == sqrt(0.0));
+    assert(std_dev_1(a, a + 1, 0.0) == sqrt(0.0));
+    assert(std_dev_1(a, a + 2, 0.0) == sqrt((0.5 + 0.5)       / 2));
+    assert(std_dev_1(a, a + 3, 0.0) == sqrt((1.0 + 0.0 + 1.0) / 3));
 
-    {
-    int x[u];
-    set_intersection(a, a + s, b, b + t, x);
-    assert(issorted(x, x + u));
-    assert(equal(x, x + u, c));
-    }
-
-    {
-    int x[u];
-    my_set_intersection(a, a + s, b, b + t, x);
-    assert(issorted(x, x + u));
-    assert(equal(x, x + u, c));
-    }
+    assert(std_dev_2(a, a,     0.0) == sqrt(0.0));
+    assert(std_dev_2(a, a + 1, 0.0) == sqrt(0.0));
+    assert(std_dev_2(a, a + 2, 0.0) == sqrt((13.0 / 2) - 6.25));
+    assert(std_dev_2(a, a + 3, 0.0) == sqrt((29.0 / 3) - 9.0));
 
     cout << "Done." << endl;
     return 0;}
