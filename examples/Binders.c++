@@ -50,6 +50,11 @@ my_binder2nd<BF> my_bind2nd (BF f, const T& y) {
 
 template <typename T>
 struct my_plus : std::binary_function<T, T, T> {
+/*
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+*/
     T operator () (const T& x, const T& y) const {
         return x + y;}};
 
