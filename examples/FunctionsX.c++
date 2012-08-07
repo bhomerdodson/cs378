@@ -3,7 +3,7 @@
 // --------------
 
 /*
-% g++-4.5 -pedantic -std=c++0x -Wall FunctionsX.c++ -o FunctionsX.c++.app
+% g++-4.7 -pedantic -std=c++11 -Wall FunctionsX.c++ -o FunctionsX.c++.app
 % FunctionsX.c++.app
 */
 

@@ -18,6 +18,9 @@ int main () {
     return 0;}
 
 /*
+% valgrind --version
+valgrind-3.6.0.SVN-Debian
+
 % g++ -ansi -pedantic -Wall Valgrind.c++ -o Valgrind.c++.app
 % valgrind Valgrind.c++.app
 ==31976== Memcheck, a memory error detector.

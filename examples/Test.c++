@@ -1,60 +1,152 @@
-// ----------
-// StdDev.c++
-// ----------
+// --------------
+// FunctionsX.c++
+// --------------
 
-#include <algorithm>  // distance, transform
+/*
+% g++-4.7 -pedantic -std=c++11 -Wall FunctionsX.c++ -o FunctionsX.c++.app
+% FunctionsX.c++.app
+*/
+
 #include <cassert>    // assert
-#include <cmath>      // sqrt
-#include <functional> // bind2nd, minus, unary_function
+#include <functional> // function, multiplies, plus
 #include <iostream>   // cout, endl
-#include <numeric>    // accumulate
-#include <vector>     // vector
 
-template <typename II, typename T>
-T mean (II b, II e, T v) {
-    v = std::accumulate(b, e, v);
-    if (v == 0)
-        return 0;
-    return v / std::distance(b, e);}
+int plus_1 (int x, int y) {
+    return x + y;}
+
+int multiplies_1 (int x, int y) {
+    return x * y;}
 
 template <typename T>
-struct sqre : std::unary_function<T, T> {
-    T operator () (const T& v) {
-        return v * v;}};
+T plus_2 (T x, T y) {
+    return x + y;}
 
-// square root of the mean of the squares of the differences with the mean
-template <typename II, typename T>
-T std_dev_1 (II b, II e, T v) {
-    std::vector<T> x(std::distance(b, e));
-    std::transform(b, e, x.begin(), std::bind2nd(std::minus<int>(), mean(b, e, v)));
-    std::transform(x.begin(), x.end(), x.begin(), sqre<int>());
-    T msdm = mean(x.begin(), x.end(), v);
-    return sqrt(msdm);}
+template <typename T>
+T multiplies_2 (T x, T y) {
+    return x * y;}
 
-// square root of the mean of the squares minus the square of the mean
-template <typename II, typename T>
-T std_dev_2 (II b, II e, T v) {
-    std::vector<T> x(std::distance(b, e));
-    std::transform(b, e, x.begin(), sqre<int>());
-    T ms = mean(x.begin(), x.end(), v);
-    T sm = sqre<T>()(mean(b, e, v));
-    return std::sqrt(ms - sm);}
+struct plus_3 {
+    int operator () (int x, int y) const {
+        return x + y;}};
+
+struct multiplies_3 {
+    int operator () (int x, int y) const {
+        return x * y;}};
+
+template <typename T>
+struct plus_4 {
+    T operator () (const T& x, const T& y) const {
+        return x + y;}};
+
+template <typename T>
+struct multiplies_4 {
+    T operator () (const T& x, const T& y) const {
+        return x * y;}};
+
+int f (int (*bf) (int, int), int x, int y, int z) {
+    assert(bf == *bf);
+    return bf(bf(x, y), z);}
+
+template <typename BF, typename T>
+T g (BF bf, const T& x, const T& y, const T& z) {
+    return bf(bf(x, y), z);}
+
+int h (std::function<int (int, int)> bf, int x, int y, int z) {
+    return bf(bf(x, y), z);}
 
 int main () {
     using namespace std;
-    cout << "StdDev.c++" << endl;
+    cout << "FunctionsX.c++" << endl;
 
-    int a[] = {2, 3, 4};
+    assert(plus_1      (2, 3) == 5);
+    assert(multiplies_1(2, 3) == 6);
 
-    assert(std_dev_1(a, a,     0.0) == sqrt(0.0));
-    assert(std_dev_1(a, a + 1, 0.0) == sqrt(0.0));
-    assert(std_dev_1(a, a + 2, 0.0) == sqrt((0.5 + 0.5)       / 2));
-    assert(std_dev_1(a, a + 3, 0.0) == sqrt((1.0 + 0.0 + 1.0) / 3));
+    assert(plus_2      (2, 3) == 5);
+    assert(multiplies_2(2, 3) == 6);
 
-    assert(std_dev_2(a, a,     0.0) == sqrt(0.0));
-    assert(std_dev_2(a, a + 1, 0.0) == sqrt(0.0));
-    assert(std_dev_2(a, a + 2, 0.0) == sqrt((13.0 / 2) - 6.25));
-    assert(std_dev_2(a, a + 3, 0.0) == sqrt((29.0 / 3) - 9.0));
+    assert(plus_3()      (2, 3) == 5);
+    assert(multiplies_3()(2, 3) == 6);
+
+    assert(plus_4<int>()      (2, 3) == 5);
+    assert(multiplies_4<int>()(2, 3) == 6);
+
+    assert(plus<int>()      (2, 3) == 5);
+    assert(multiplies<int>()(2, 3) == 6);
+
+    assert([](int x, int y) {return x + y;}(2, 3) == 5);
+    assert([](int x, int y) {return x * y;}(2, 3) == 6);
+
+
+
+    assert(f( plus_1,       2, 3, 4) ==  9);
+    assert(f( multiplies_1, 2, 3, 4) == 24);
+    assert(f(&plus_1,       2, 3, 4) ==  9);
+    assert(f(&multiplies_1, 2, 3, 4) == 24);
+
+    assert(f( plus_2,       2, 3, 4) ==  9);
+    assert(f( multiplies_2, 2, 3, 4) == 24);
+    assert(f(&plus_2,       2, 3, 4) ==  9);
+    assert(f(&multiplies_2, 2, 3, 4) == 24);
+
+//  assert(f(plus_3(),       2, 3, 4) ==  9); // error: cannot convert ‘plus_3’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
+//  assert(f(multiplies_3(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies_3’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
+
+//  assert(f(plus_4<int>(),       2, 3, 4) ==  9); // error: cannot convert ‘plus_4<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
+//  assert(f(multiplies_4<int>(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies_4<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
+
+//  assert(f(plus<int>(),       2, 3, 4) ==  9); // error: cannot convert ‘plus<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
+//  assert(f(multiplies<int>(), 2, 3, 4) == 24); // error: cannot convert ‘multiplies<int>’ to ‘int (*)(int, int)’ for argument ‘1’ to ‘int f(int (*)(int, int), int, int, int)’
+
+    assert(f([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
+    assert(f([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
+
+
+
+    assert(g( plus_1,       2, 3, 4) ==  9);
+    assert(g( multiplies_1, 2, 3, 4) == 24);
+    assert(g(&plus_1,       2, 3, 4) ==  9);
+    assert(g(&multiplies_1, 2, 3, 4) == 24);
+
+    assert(g( plus_2<int>,       2, 3, 4) ==  9);
+    assert(g( multiplies_2<int>, 2, 3, 4) == 24);
+    assert(g(&plus_2<int>,       2, 3, 4) ==  9);
+    assert(g(&multiplies_2<int>, 2, 3, 4) == 24);
+
+    assert(g(plus_3(),       2, 3, 4) ==  9);
+    assert(g(multiplies_3(), 2, 3, 4) == 24);
+
+    assert(g(plus_4<int>(),       2, 3, 4) ==  9);
+    assert(g(multiplies_4<int>(), 2, 3, 4) == 24);
+
+    assert(g(plus<int>(),       2, 3, 4) ==  9);
+    assert(g(multiplies<int>(), 2, 3, 4) == 24);
+
+    assert(g([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
+    assert(g([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
+
+
+
+    assert(h( plus_1,       2, 3, 4) ==  9);
+    assert(h( multiplies_1, 2, 3, 4) == 24);
+    assert(h(&plus_1,       2, 3, 4) ==  9);
+    assert(h(&multiplies_1, 2, 3, 4) == 24);
+
+    assert(h( plus_2<int>,       2, 3, 4) ==  9);
+    assert(h( multiplies_2<int>, 2, 3, 4) == 24);
+    assert(h(&plus_2<int>,       2, 3, 4) ==  9);
+    assert(h(&multiplies_2<int>, 2, 3, 4) == 24);
+
+    assert(h(plus_3(),       2, 3, 4) ==  9);
+    assert(h(multiplies_3(), 2, 3, 4) == 24);
+
+    assert(h(plus_4<int>(),       2, 3, 4) ==  9);
+    assert(h(multiplies_4<int>(), 2, 3, 4) == 24);
+
+    assert(h(plus<int>(),       2, 3, 4) ==  9);
+    assert(h(multiplies<int>(), 2, 3, 4) == 24);
+
+    assert(h([](int x, int y) {return x + y;}, 2, 3, 4) ==  9);
+    assert(h([](int x, int y) {return x * y;}, 2, 3, 4) == 24);
 
     cout << "Done." << endl;
     return 0;}

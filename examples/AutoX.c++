@@ -3,7 +3,7 @@
 // ---------
 
 /*
-% g++-4.5 -pedantic -std=c++0x -Wall AutoX.c++ -o AutoX.c++.app
+% g++-4.7 -pedantic -std=c++11 -Wall AutoX.c++ -o AutoX.c++.app
 % AutoX.c++.app
 */
 
